@@ -70,7 +70,7 @@ public class CourseManager {
             PrintStream originalOut = System.out;
 
             // Create a FileOutputStream to write to the file
-            FileOutputStream fileOutputStream = new FileOutputStream(studentId);
+            FileOutputStream fileOutputStream = new FileOutputStream(studentId + ".txt");
 
             // Create a new PrintStream that writes to both the console and the file
             PrintStream combinedPrintStream = new PrintStream(new TeeOutputStream(originalOut, fileOutputStream));
@@ -130,7 +130,7 @@ public class CourseManager {
             combinedPrintStream.close();
             System.setOut(originalOut);
 
-            System.out.println("Output saved to " + studentId);
+            System.out.println("Output saved to " + studentId + ".txt");
         } catch (Exception e) {
             e.printStackTrace();
         }

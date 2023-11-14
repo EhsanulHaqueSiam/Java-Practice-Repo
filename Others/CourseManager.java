@@ -4,41 +4,29 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
-class Course implements Serializable {
+/**
+ * @param creditCount Lec-Com-Sci-Lan-Stu
+ */
+record Course(String courseCode, String courseName, int[] creditCount, List<String> prerequisites,
+              boolean major) implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
 
-    private final String courseCode;
-    private final String courseName;
-    private final int[] creditCount; // Lec-Com-Sci-Lan-Stu
-    private final List<String> prerequisites;
-    private final boolean major;
+}
 
-    public Course(String courseCode, String courseName, int[] creditCount, List<String> prerequisites, boolean major) {
-        this.courseCode = courseCode;
-        this.courseName = courseName;
-        this.creditCount = creditCount;
-        this.prerequisites = prerequisites;
-        this.major = major;
+class TeeOutputStream extends java.io.OutputStream {
+    private final java.io.OutputStream branch1;
+    private final java.io.OutputStream branch2;
+
+    public TeeOutputStream(java.io.OutputStream branch1, java.io.OutputStream branch2) {
+        this.branch1 = branch1;
+        this.branch2 = branch2;
     }
 
-    public String getCourseCode() {
-        return courseCode;
-    }
-
-    public String getCourseName() {
-        return courseName;
-    }
-
-    public int[] getCreditCount() {
-        return creditCount;
-    }
-
-    public List<String> getPrerequisites() {
-        return prerequisites;
-    }
-
-    public boolean isMajor() {
-        return major;
+    @Override
+    public void write(int b) throws java.io.IOException {
+        branch1.write(b);
+        branch2.write(b);
     }
 }
 
@@ -52,12 +40,15 @@ public class CourseManager {
         System.out.println("Courses:");
         for (int i = 0; i < courses.size(); i++) {
             Course course = courses.get(i);
-            System.out.println("                                " + (i + 1) + " : " + course.getCourseName() + " (" + course.getCourseCode() + ")");
-            //System.out.println((i + 1) + ". " + course.getCourseName() + " (" + course.getCourseCode() + ")");
+            System.out.println("                                " + (i + 1) + " : " + course.courseName() + " (" + course.courseCode() + ")");
         }
         System.out.println("\n\n\n       Please follow the instructions carefully\n");
-        // Take user input for courses taken
+
+        // Take user input for ID and courses taken
         Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter student ID (e.g., 22-XXXXX-X): ");
+        String studentId = getInputWithValidation(scanner, "\\d{2}-\\d{5}-\\d{1}");
+
         System.out.println("Note : Enter the serial of the courses one by one & invalid serial may lead to false result\n");
         System.out.println("Enter the numbers of the courses you have taken (separated by spaces):");
         String input = scanner.nextLine();
@@ -67,21 +58,27 @@ public class CourseManager {
         // Calculate total credits for the courses selected by the user
         for (String courseNumber : input.split(" ")) {
             int index = Integer.parseInt(courseNumber) - 1;
-            creditCompleted += courses.get(index).getCreditCount()[0];
+            creditCompleted += courses.get(index).creditCount()[0];
         }
 
 
-//        System.out.println("Total Credits: " + totalCredits);
-//
-//        // Display "INTERNSHIP" if the total credits are greater than or equal to 139
-//        if (totalCredits >= 139) {
-//            System.out.println("You are eligible for INTERNSHIP.");
-//        }
-//        else
-//            System.out.println("You are not eligible for INTERNSHIP.");
-
         // Process user input and display available courses
         List<Course> availableCourses = getAvailableCourses(courses, input);
+
+        try {
+            // Save the current System.out
+            PrintStream originalOut = System.out;
+
+            // Create a FileOutputStream to write to the file
+            FileOutputStream fileOutputStream = new FileOutputStream(studentId);
+
+            // Create a new PrintStream that writes to both the console and the file
+            PrintStream combinedPrintStream = new PrintStream(new TeeOutputStream(originalOut, fileOutputStream));
+
+            // Set the System.out to the combinedPrintStream
+            System.setOut(combinedPrintStream);
+
+
         System.out.println("----------------------------------------------------------------------------------------------");
 
         System.out.println("       You Completed " + creditCompleted + " Credits.");
@@ -108,29 +105,40 @@ public class CourseManager {
 
             int availableCourseCounter = 1;
             for (Course course : availableCourses) {
-                if (course.isMajor()) {
-                    if (infoSysMajorCourseCodes.contains(course.getCourseCode()) && !infoSysMajorPrinted) {
+                if (course.major()) {
+                    if (infoSysMajorCourseCodes.contains(course.courseCode()) && !infoSysMajorPrinted) {
                         System.out.println("\n       Major in Information Systems :");
                         infoSysMajorPrinted = true;
-                    } else if (softwareEngMajorCourseCodes.contains(course.getCourseCode()) && !softwareEngMajorPrinted) {
+                    } else if (softwareEngMajorCourseCodes.contains(course.courseCode()) && !softwareEngMajorPrinted) {
                         System.out.println("\n       Major in Software Engineering :");
                         softwareEngMajorPrinted = true;
-                    } else if (compTheoryMajorCourseCodes.contains(course.getCourseCode()) && !compTheoryMajorPrinted) {
+                    } else if (compTheoryMajorCourseCodes.contains(course.courseCode()) && !compTheoryMajorPrinted) {
                         System.out.println("\n       Major in Computational Theory :");
                         compTheoryMajorPrinted = true;
-                    } else if (compEngMajorCourseCodes.contains(course.getCourseCode()) && !compEngMajorPrinted) {
+                    } else if (compEngMajorCourseCodes.contains(course.courseCode()) && !compEngMajorPrinted) {
                         System.out.println("\n       Major in Computer Engineering :");
                         compEngMajorPrinted = true;
                     }
                 }
 
-                System.out.println("\n                    " + (availableCourseCounter++) + " : " + "       " + course.getCourseName() + " (" + course.getCourseCode() + ")");
-                System.out.println("                                " + Arrays.toString(course.getCreditCount()));
+                System.out.println("\n                    " + (availableCourseCounter++) + " : " + "       " + course.courseName() + " (" + course.courseCode() + ")");
+                System.out.println("                                " + Arrays.toString(course.creditCount()));
             }
+        }
+
+            // Close the combinedPrintStream and restore the original System.out
+            combinedPrintStream.close();
+            System.setOut(originalOut);
+
+            System.out.println("Output saved to " + studentId);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         // Serialize the updated course list and save it to a file
         saveCoursesToFile(courses);
+
+
     }
 
     private static List<Course> createHardcodedCourses() {
@@ -423,7 +431,7 @@ public class CourseManager {
             for (String courseNumber : takenCourseNumbers) {
                 int index = Integer.parseInt(courseNumber) - 1;
                 takenCourses.add(courses.get(index));
-                totalCredits += courses.get(index).getCreditCount()[0];
+                totalCredits += courses.get(index).creditCount()[0];
             }
         }
 
@@ -431,9 +439,9 @@ public class CourseManager {
         List<Course> availableCourses = new ArrayList<>();
         for (Course course : courses) {
             if (!takenCourses.contains(course) && canTakeCourse(course, takenCourses)) {
-                if (course.getCourseCode().equals("CSC4197") && totalCredits < 100)
+                if (course.courseCode().equals("CSC4197") && totalCredits < 100)
                     continue;
-                else if (course.getCourseCode().equals("CSC4296") && totalCredits < 139) {
+                else if (course.courseCode().equals("CSC4296") && totalCredits < 139) {
                     continue;
                 }
                 availableCourses.add(course);
@@ -444,14 +452,14 @@ public class CourseManager {
     }
 
     private static boolean canTakeCourse(Course course, List<Course> takenCourses) {
-        if (course.getPrerequisites().isEmpty()) {
+        if (course.prerequisites().isEmpty()) {
             return true;
         }
 
-        for (String prerequisite : course.getPrerequisites()) {
+        for (String prerequisite : course.prerequisites()) {
             boolean hasPrerequisite = false;
             for (Course takenCourse : takenCourses) {
-                if (takenCourse.getCourseCode().equals(prerequisite)) {
+                if (takenCourse.courseCode().equals(prerequisite)) {
                     hasPrerequisite = true;
                     break;
                 }
@@ -463,4 +471,18 @@ public class CourseManager {
 
         return true;
     }
+    private static String getInputWithValidation(Scanner scanner, String regex) {
+        String input;
+        while (true) {
+            System.out.print("Enter input: ");
+            input = scanner.nextLine().trim();
+            if (input.matches(regex)) {
+                break;
+            } else {
+                System.out.println("Invalid input. Please enter the correct format.");
+            }
+        }
+        return input;
+    }
 }
+

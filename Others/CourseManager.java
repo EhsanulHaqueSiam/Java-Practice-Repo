@@ -46,16 +46,20 @@ public class CourseManager {
     public static void main(String[] args) {
         List<Course> courses = loadCoursesFromFile(); // Load courses from file or create a new list
 //        List<Course> courses =createHardcodedCourses();
+        System.out.println("             -------------------Welcome to the AIUB Pre-requisite solution----------------------\n\n\n\n\n");
 
         // Print course list with serial numbers
         System.out.println("Courses:");
         for (int i = 0; i < courses.size(); i++) {
             Course course = courses.get(i);
-            System.out.println((i + 1) + ". " + course.getCourseName() + " (" + course.getCourseCode() + ")");
+            System.out.println("\n                    "+(i + 1)+" : "+"       "+course.getCourseName() + " (" + course.getCourseCode() + ")");
+            System.out.println("                                "+Arrays.toString(course.getCreditCount()));
+            //System.out.println((i + 1) + ". " + course.getCourseName() + " (" + course.getCourseCode() + ")");
         }
-
+        System.out.println("\n\n\n       Please follow the instructions carefully\n\n\n");
         // Take user input for courses taken
         Scanner scanner = new Scanner(System.in);
+        System.out.println("Note : Enter the serial of the courses one by one & invalid serial may lead to false result\n\n");
         System.out.println("Enter the numbers of the courses you have taken (separated by spaces):");
         String input = scanner.nextLine();
 
@@ -78,8 +82,14 @@ public class CourseManager {
 
         // Process user input and display available courses
         List<Course> availableCourses = getAvailableCourses(courses, input);
+        System.out.println("----------------------------------------------------------------------------------------------");
+        if (availableCourses.isEmpty()){
+            System.out.println("            No Available Courses");
+        }else{
 
-        System.out.println("Available Courses:");
+
+        System.out.println("       Available Courses : ");
+            System.out.println("       Credit (Lec-Com-Sci-Lan-Stu) ");
 
 
         List<String> infoSysMajorCourseCodes = Arrays.asList("CSC4181", "MIS3101", "MIS4011", "CSC4285", "CSC4182", "MIS4014", "CSC4180", "CSC4183", "MIS4007", "MIS4012");
@@ -92,26 +102,27 @@ public class CourseManager {
         boolean compTheoryMajorPrinted = false;
         boolean compEngMajorPrinted = false;
 
+        int availableCourseCounter=1;
         for (Course course : availableCourses) {
             if (course.isMajor()) {
                 if (infoSysMajorCourseCodes.contains(course.getCourseCode()) && !infoSysMajorPrinted) {
-                    System.out.println("\nMajor in Information Systems:");
+                    System.out.println("\n       Major in Information Systems :");
                     infoSysMajorPrinted = true;
                 } else if (softwareEngMajorCourseCodes.contains(course.getCourseCode()) && !softwareEngMajorPrinted) {
-                    System.out.println("\nMajor in Software Engineering:");
+                    System.out.println("\n       Major in Software Engineering :");
                     softwareEngMajorPrinted = true;
                 } else if (compTheoryMajorCourseCodes.contains(course.getCourseCode()) && !compTheoryMajorPrinted) {
-                    System.out.println("\nMajor in Computational Theory:");
+                    System.out.println("\n       Major in Computational Theory :");
                     compTheoryMajorPrinted = true;
                 } else if (compEngMajorCourseCodes.contains(course.getCourseCode()) && !compEngMajorPrinted) {
-                    System.out.println("\nMajor in Computer Engineering:");
+                    System.out.println("\n       Major in Computer Engineering :");
                     compEngMajorPrinted = true;
                 }
-
-                System.out.println(course.getCourseName() + " (" + course.getCourseCode() + ")");
-            } else {
-                System.out.println(course.getCourseName() + " (" + course.getCourseCode() + ")");
             }
+            
+            System.out.println("\n                    "+(availableCourseCounter++)+" : "+"       "+course.getCourseName() + " (" + course.getCourseCode() + ")");
+            System.out.println("                                "+Arrays.toString(course.getCreditCount()));
+        }
         }
 
         // Serialize the updated course list and save it to a file

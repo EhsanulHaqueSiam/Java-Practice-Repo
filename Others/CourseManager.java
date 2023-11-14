@@ -52,8 +52,8 @@ public class CourseManager {
         System.out.println("Courses:");
         for (int i = 0; i < courses.size(); i++) {
             Course course = courses.get(i);
-            System.out.println("\n                    "+(i + 1)+" : "+"       "+course.getCourseName() + " (" + course.getCourseCode() + ")");
-            System.out.println("                                "+Arrays.toString(course.getCreditCount()));
+            System.out.println("\n                    " + (i + 1) + " : " + "       " + course.getCourseName() + " (" + course.getCourseCode() + ")");
+            System.out.println("                                " + Arrays.toString(course.getCreditCount()));
             //System.out.println((i + 1) + ". " + course.getCourseName() + " (" + course.getCourseCode() + ")");
         }
         System.out.println("\n\n\n       Please follow the instructions carefully\n\n\n");
@@ -63,14 +63,15 @@ public class CourseManager {
         System.out.println("Enter the numbers of the courses you have taken (separated by spaces):");
         String input = scanner.nextLine();
 
-//        int totalCredits = 0;
-//
-//        // Calculate total credits for the courses selected by the user
-//        for (String courseNumber : input.split(" ")) {
-//            int index = Integer.parseInt(courseNumber) - 1;
-//            totalCredits += courses.get(index).getCreditCount()[0];
-//        }
-//
+        int creditCompleted = 0;
+
+        // Calculate total credits for the courses selected by the user
+        for (String courseNumber : input.split(" ")) {
+            int index = Integer.parseInt(courseNumber) - 1;
+            creditCompleted += courses.get(index).getCreditCount()[0];
+        }
+
+
 //        System.out.println("Total Credits: " + totalCredits);
 //
 //        // Display "INTERNSHIP" if the total credits are greater than or equal to 139
@@ -83,46 +84,50 @@ public class CourseManager {
         // Process user input and display available courses
         List<Course> availableCourses = getAvailableCourses(courses, input);
         System.out.println("----------------------------------------------------------------------------------------------");
-        if (availableCourses.isEmpty()){
+
+        System.out.println("       You Completed " + creditCompleted + " Credits.");
+        System.out.println("       " + (148 - creditCompleted) + " More To Go .");
+        System.out.println("       Best Of luck\n");
+        if (availableCourses.isEmpty()) {
             System.out.println("            No Available Courses");
-        }else{
+        } else {
 
 
-        System.out.println("       Available Courses : ");
+            System.out.println("       Available Courses : ");
             System.out.println("       Credit (Lec-Com-Sci-Lan-Stu) ");
 
 
-        List<String> infoSysMajorCourseCodes = Arrays.asList("CSC4181", "MIS3101", "MIS4011", "CSC4285", "CSC4182", "MIS4014", "CSC4180", "CSC4183", "MIS4007", "MIS4012");
-        List<String> softwareEngMajorCourseCodes = Arrays.asList("CSC4270", "CSC4160", "CSC4271", "CSC4162", "CSC4274", "CSC4163", "CSC4164", "CSC4161", "CSC4272", "CSC4273");
-        List<String> compTheoryMajorCourseCodes = Arrays.asList("CSC4125", "CSC4126", "CSC4127", "CSC4233", "CSC4128", "CSC4231", "CSC4232");
-        List<String> compEngMajorCourseCodes = Arrays.asList("BAE1201", "EEE3103", "EEE4217", "EEE2213", "COE4128", "COE4231", "COE4129", "COE4230", "COE4126", "COE4234", "COE4232", "COE4125", "EEE4233");
+            List<String> infoSysMajorCourseCodes = Arrays.asList("CSC4181", "MIS3101", "MIS4011", "CSC4285", "CSC4182", "MIS4014", "CSC4180", "CSC4183", "MIS4007", "MIS4012");
+            List<String> softwareEngMajorCourseCodes = Arrays.asList("CSC4270", "CSC4160", "CSC4271", "CSC4162", "CSC4274", "CSC4163", "CSC4164", "CSC4161", "CSC4272", "CSC4273");
+            List<String> compTheoryMajorCourseCodes = Arrays.asList("CSC4125", "CSC4126", "CSC4127", "CSC4233", "CSC4128", "CSC4231", "CSC4232");
+            List<String> compEngMajorCourseCodes = Arrays.asList("BAE1201", "EEE3103", "EEE4217", "EEE2213", "COE4128", "COE4231", "COE4129", "COE4230", "COE4126", "COE4234", "COE4232", "COE4125", "EEE4233");
 
-        boolean infoSysMajorPrinted = false;
-        boolean softwareEngMajorPrinted = false;
-        boolean compTheoryMajorPrinted = false;
-        boolean compEngMajorPrinted = false;
+            boolean infoSysMajorPrinted = false;
+            boolean softwareEngMajorPrinted = false;
+            boolean compTheoryMajorPrinted = false;
+            boolean compEngMajorPrinted = false;
 
-        int availableCourseCounter=1;
-        for (Course course : availableCourses) {
-            if (course.isMajor()) {
-                if (infoSysMajorCourseCodes.contains(course.getCourseCode()) && !infoSysMajorPrinted) {
-                    System.out.println("\n       Major in Information Systems :");
-                    infoSysMajorPrinted = true;
-                } else if (softwareEngMajorCourseCodes.contains(course.getCourseCode()) && !softwareEngMajorPrinted) {
-                    System.out.println("\n       Major in Software Engineering :");
-                    softwareEngMajorPrinted = true;
-                } else if (compTheoryMajorCourseCodes.contains(course.getCourseCode()) && !compTheoryMajorPrinted) {
-                    System.out.println("\n       Major in Computational Theory :");
-                    compTheoryMajorPrinted = true;
-                } else if (compEngMajorCourseCodes.contains(course.getCourseCode()) && !compEngMajorPrinted) {
-                    System.out.println("\n       Major in Computer Engineering :");
-                    compEngMajorPrinted = true;
+            int availableCourseCounter = 1;
+            for (Course course : availableCourses) {
+                if (course.isMajor()) {
+                    if (infoSysMajorCourseCodes.contains(course.getCourseCode()) && !infoSysMajorPrinted) {
+                        System.out.println("\n       Major in Information Systems :");
+                        infoSysMajorPrinted = true;
+                    } else if (softwareEngMajorCourseCodes.contains(course.getCourseCode()) && !softwareEngMajorPrinted) {
+                        System.out.println("\n       Major in Software Engineering :");
+                        softwareEngMajorPrinted = true;
+                    } else if (compTheoryMajorCourseCodes.contains(course.getCourseCode()) && !compTheoryMajorPrinted) {
+                        System.out.println("\n       Major in Computational Theory :");
+                        compTheoryMajorPrinted = true;
+                    } else if (compEngMajorCourseCodes.contains(course.getCourseCode()) && !compEngMajorPrinted) {
+                        System.out.println("\n       Major in Computer Engineering :");
+                        compEngMajorPrinted = true;
+                    }
                 }
+
+                System.out.println("\n                    " + (availableCourseCounter++) + " : " + "       " + course.getCourseName() + " (" + course.getCourseCode() + ")");
+                System.out.println("                                " + Arrays.toString(course.getCreditCount()));
             }
-            
-            System.out.println("\n                    "+(availableCourseCounter++)+" : "+"       "+course.getCourseName() + " (" + course.getCourseCode() + ")");
-            System.out.println("                                "+Arrays.toString(course.getCreditCount()));
-        }
         }
 
         // Serialize the updated course list and save it to a file
@@ -427,9 +432,9 @@ public class CourseManager {
         List<Course> availableCourses = new ArrayList<>();
         for (Course course : courses) {
             if (!takenCourses.contains(course) && canTakeCourse(course, takenCourses)) {
-                if (course.getCourseCode().equals("CSC4197") && totalCredits<100)
+                if (course.getCourseCode().equals("CSC4197") && totalCredits < 100)
                     continue;
-                else if (course.getCourseCode().equals("CSC4296") && totalCredits<139) {
+                else if (course.getCourseCode().equals("CSC4296") && totalCredits < 139) {
                     continue;
                 }
                 availableCourses.add(course);

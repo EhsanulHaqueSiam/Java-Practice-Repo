@@ -78,11 +78,40 @@ public class CourseManager {
 
         // Process user input and display available courses
         List<Course> availableCourses = getAvailableCourses(courses, input);
+
         System.out.println("Available Courses:");
 
 
+        List<String> infoSysMajorCourseCodes = Arrays.asList("CSC4181", "MIS3101", "MIS4011", "CSC4285", "CSC4182", "MIS4014", "CSC4180", "CSC4183", "MIS4007", "MIS4012");
+        List<String> softwareEngMajorCourseCodes = Arrays.asList("CSC4270", "CSC4160", "CSC4271", "CSC4162", "CSC4274", "CSC4163", "CSC4164", "CSC4161", "CSC4272", "CSC4273");
+        List<String> compTheoryMajorCourseCodes = Arrays.asList("CSC4125", "CSC4126", "CSC4127", "CSC4233", "CSC4128", "CSC4231", "CSC4232");
+        List<String> compEngMajorCourseCodes = Arrays.asList("BAE1201", "EEE3103", "EEE4217", "EEE2213", "COE4128", "COE4231", "COE4129", "COE4230", "COE4126", "COE4234", "COE4232", "COE4125", "EEE4233");
+
+        boolean infoSysMajorPrinted = false;
+        boolean softwareEngMajorPrinted = false;
+        boolean compTheoryMajorPrinted = false;
+        boolean compEngMajorPrinted = false;
+
         for (Course course : availableCourses) {
-            System.out.println(course.getCourseName() + " (" + course.getCourseCode() + ") " + (course.isMajor()? " - Major":""));
+            if (course.isMajor()) {
+                if (infoSysMajorCourseCodes.contains(course.getCourseCode()) && !infoSysMajorPrinted) {
+                    System.out.println("\nMajor in Information Systems:");
+                    infoSysMajorPrinted = true;
+                } else if (softwareEngMajorCourseCodes.contains(course.getCourseCode()) && !softwareEngMajorPrinted) {
+                    System.out.println("\nMajor in Software Engineering:");
+                    softwareEngMajorPrinted = true;
+                } else if (compTheoryMajorCourseCodes.contains(course.getCourseCode()) && !compTheoryMajorPrinted) {
+                    System.out.println("\nMajor in Computational Theory:");
+                    compTheoryMajorPrinted = true;
+                } else if (compEngMajorCourseCodes.contains(course.getCourseCode()) && !compEngMajorPrinted) {
+                    System.out.println("\nMajor in Computer Engineering:");
+                    compEngMajorPrinted = true;
+                }
+
+                System.out.println(course.getCourseName() + " (" + course.getCourseCode() + ")");
+            } else {
+                System.out.println(course.getCourseName() + " (" + course.getCourseCode() + ")");
+            }
         }
 
         // Serialize the updated course list and save it to a file

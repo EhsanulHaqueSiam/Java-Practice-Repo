@@ -46,20 +46,19 @@ public class CourseManager {
     public static void main(String[] args) {
         List<Course> courses = loadCoursesFromFile(); // Load courses from file or create a new list
 //        List<Course> courses =createHardcodedCourses();
-        System.out.println("             -------------------Welcome to the AIUB Pre-requisite solution----------------------\n\n\n\n\n");
+        System.out.println("             -------------------Welcome to the AIUB Pre-requisite solution----------------------\n\n\n");
 
         // Print course list with serial numbers
         System.out.println("Courses:");
         for (int i = 0; i < courses.size(); i++) {
             Course course = courses.get(i);
-            System.out.println("\n                    " + (i + 1) + " : " + "       " + course.getCourseName() + " (" + course.getCourseCode() + ")");
-            System.out.println("                                " + Arrays.toString(course.getCreditCount()));
+            System.out.println("                                " + (i + 1) + " : " + course.getCourseName() + " (" + course.getCourseCode() + ")");
             //System.out.println((i + 1) + ". " + course.getCourseName() + " (" + course.getCourseCode() + ")");
         }
-        System.out.println("\n\n\n       Please follow the instructions carefully\n\n\n");
+        System.out.println("\n\n\n       Please follow the instructions carefully\n");
         // Take user input for courses taken
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Note : Enter the serial of the courses one by one & invalid serial may lead to false result\n\n");
+        System.out.println("Note : Enter the serial of the courses one by one & invalid serial may lead to false result\n");
         System.out.println("Enter the numbers of the courses you have taken (separated by spaces):");
         String input = scanner.nextLine();
 
